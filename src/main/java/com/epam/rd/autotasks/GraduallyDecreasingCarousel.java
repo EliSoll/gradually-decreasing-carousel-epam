@@ -17,25 +17,38 @@ public class GraduallyDecreasingCarousel extends DecrementingCarousel{
 
 class DecrementingRun extends CarouselRun {
     int position = 0;
+    int decrement = 1;
 
     public DecrementingRun(GraduallyDecreasingCarousel decrementingRun) {
         super(decrementingRun);
     }
+
     @Override
-    public int next() {
-        int temp;
-        if(isFinished()) {
-            return -1;
-        }
-        else {
-            while (array[position %= array.length] <= 0) {
-                position++;
+        public int next() {
+            int beforeDecreasing;
+            if (isFinished())
+                return -1;
+            else {
+                beforeDecreasing = array[position];
+                array[position] -= decrement;
+                do {
+                    position++;
+                    if (position == array.length) {
+                        decrement++;
+                        position = 0;
+                    }
+                } while ((array[position] <= 0) && !isFinished());
             }
+            return beforeDecreasing;
         }
-        temp = array[position];
-        int n = 1;
-        array[position++]-=n;
-        return temp;
+
+    @Override
+    public boolean isFinished() {
+        for (int var : array) {
+            if (var > 0) return false;
+        }
+        return true;
     }
 }
+
 
